@@ -3,15 +3,16 @@ package com.obaid.TicTacToeGame;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Scanner;
+
 @SpringBootApplication
 public class TicTacToeGameApplication {
-
-    public static void main(String[] args) {
+	private static char SYMBOL;
+	public static void main(String[] args) {
 
         SpringApplication.run(TicTacToeGameApplication.class, args);
 
 		makeGameBoard();
-        System.out.println("test ");
     }
 
     public static void makeGameBoard() {
@@ -23,6 +24,14 @@ public class TicTacToeGameApplication {
                 {' ', '|', ' ', '|', ' '}
         };
 		printGameBoard(gameBoard);
+
+		Scanner input = new Scanner(System.in);
+		System.out.println("Enter number from 1 to 9");
+		int position = input.nextInt();
+		System.out.println("Pos: "+ position);
+		playYourTurn(gameBoard,position,"computer");
+		printGameBoard(gameBoard);
+
     }
 
 	public static void printGameBoard(char[][] gameBoard){
@@ -33,4 +42,46 @@ public class TicTacToeGameApplication {
 			System.out.println();
 		}
 	}
+
+	public static void playYourTurn(char [][] gameBoard, int position, String player){
+
+		if(player.equals("player")){
+			SYMBOL = 'X';
+		} else if (player.equals("computer")) {
+			SYMBOL ='O';
+		}
+		switch (position){
+			case 1:
+				gameBoard[0][0] = SYMBOL;
+				break;
+			case 2:
+				gameBoard[0][2] = SYMBOL;
+				break;
+			case 3:
+				gameBoard[0][4] = SYMBOL;
+				break;
+			case 4:
+				gameBoard[2][0] = SYMBOL;
+				break;
+			case 5:
+				gameBoard[2][2] = SYMBOL;
+				break;
+			case 6:
+				gameBoard[2][4] = SYMBOL;
+				break;
+			case 7:
+				gameBoard[4][0] = SYMBOL;
+				break;
+			case 8:
+				gameBoard[4][2] = SYMBOL;
+				break;
+			case 9:
+				gameBoard[4][4] = SYMBOL;
+				break;
+			default:
+				break;
+		}
+	}
+
+
 }
