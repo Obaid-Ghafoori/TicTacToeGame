@@ -3,12 +3,16 @@ package com.obaid.TicTacToeGame;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 @SpringBootApplication
 public class TicTacToeGameApplication {
     private static char SYMBOL;
+    private static int playerPos;
+    private static Scanner input;
+    private static char[][] gameBoard;
+    private static ArrayList<Integer> playerPositions = new ArrayList<>();
+    private static ArrayList<Integer> computerPositions = new ArrayList<>();
 
     public static void main(String[] args) {
         SpringApplication.run(TicTacToeGameApplication.class, args);
@@ -16,7 +20,7 @@ public class TicTacToeGameApplication {
     }
 
     public static void makeGameBoard() {
-        char[][] gameBoard = {
+       gameBoard = new char[][]{
                 {' ', '|', ' ', '|', ' '},
                 {'-', '+', '-', '+', '-'},
                 {' ', '|', ' ', '|', ' '},
@@ -25,20 +29,43 @@ public class TicTacToeGameApplication {
         };
         printGameBoard(gameBoard);
 
-	while(true){
-		// player enter a number
-		Scanner input = new Scanner(System.in);
-		System.out.println("Enter number from 1 to 9");
-		int position = input.nextInt();
-		System.out.println("Pos: " + position);
-		playYourTurn(gameBoard, position, "player");
+        while (true) {
+            // player enter a number
+            input = new Scanner(System.in);
+            System.out.println("Enter number from 1 to 9");
+            playerPos = input.nextInt();
 
-		// let the compture chose a rondom number
-		Random randomizer = new Random();
-		int computerPosition = randomizer.nextInt(9) + 1;
-		playYourTurn(gameBoard, computerPosition, "computer");
-		printGameBoard(gameBoard);
-	}
+            while (playerPositions.contains(playerPos) || computerPositions.contains(playerPositions)) {
+                System.out.println("this position is taken, try it in other free spot!");
+                playerPos = input.nextInt();
+            }
+
+            playYourTurn(gameBoard, playerPos, "player");
+
+
+            String result = checkWinner();
+            if (result.length() > 0) {
+                System.out.println(result);
+                break;
+            }
+
+            // let the computer chose a random number
+            Random randomizer = new Random();
+            int computerPos = randomizer.nextInt(9) + 1;
+
+            while (playerPositions.contains(computerPos) || computerPositions.contains(computerPos)) {
+                computerPos = randomizer.nextInt(9) + 1;
+            }
+            playYourTurn(gameBoard, computerPos, "computer");
+            printGameBoard(gameBoard);
+
+            result = checkWinner();
+            if (result.length() > 0) {
+                System.out.println(result);
+                break;
+            }
+
+        }
 
     }
 
@@ -51,12 +78,18 @@ public class TicTacToeGameApplication {
         }
     }
 
-    public static void playYourTurn(char[][] gameBoard, int position, String player) {
+    public static void playYourTurn(char[][] gameBoard, Integer position, String player) {
 
         if (player.equals("player")) {
             SYMBOL = 'X';
+            playerPositions.add(position);
+
         } else if (player.equals("computer")) {
             SYMBOL = 'O';
+            computerPositions.add(position);
+        }else {
+            System.out.println("this position is taken, try it in other free spot!");
+            playerPos = input.nextInt();
         }
 
         switch (position) {
@@ -91,4 +124,44 @@ public class TicTacToeGameApplication {
                 break;
         }
     }
+
+    public static String checkWinner() {
+        String result = "";
+        List topRow = Arrays.asList(1, 2, 3);
+        List midRow = Arrays.asList(4, 5, 6);
+        List bottomRow = Arrays.asList(7, 8, 9);
+
+        List leftCol = Arrays.asList(1, 4, 7);
+        List midCol = Arrays.asList(2, 5, 8);
+        List rightCol = Arrays.asList(3, 6, 9);
+
+        List leftToRightDiagonal = Arrays.asList(1, 5, 9);
+        List rightToLeftDiagonal = Arrays.asList(7, 5, 3);
+
+        List<List> wining = new ArrayList<>();
+        wining.add(topRow);
+        wining.add(midRow);
+        wining.add(bottomRow);
+        wining.add(leftCol);
+        wining.add(midCol);
+        wining.add(rightCol);
+        wining.add(leftToRightDiagonal);
+        wining.add(rightToLeftDiagonal);
+
+        for (List element : wining) {
+            if (playerPositions.containsAll(element)) {
+                return result = "Congrats player Won!";
+            } else if (computerPositions.containsAll(element)) {
+                return result = "Congrats computer Won!";
+            } else if (playerPositions.size() + computerPositions.size() == 9) {
+                return result = "Game is Tie!";
+            }
+        }
+
+
+        return result;
+
+    }
+
+
 }
