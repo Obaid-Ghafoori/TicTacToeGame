@@ -11,16 +11,18 @@ public class TicTacToeGameApplication {
     private static int playerPos;
     private static Scanner input;
     private static char[][] gameBoard;
+    private static int computerPos;
     private static ArrayList<Integer> playerPositions = new ArrayList<>();
     private static ArrayList<Integer> computerPositions = new ArrayList<>();
 
     public static void main(String[] args) {
         SpringApplication.run(TicTacToeGameApplication.class, args);
         makeGameBoard();
+        runGame(gameBoard);
     }
 
     public static void makeGameBoard() {
-       gameBoard = new char[][]{
+        gameBoard = new char[][]{
                 {' ', '|', ' ', '|', ' '},
                 {'-', '+', '-', '+', '-'},
                 {' ', '|', ' ', '|', ' '},
@@ -29,19 +31,30 @@ public class TicTacToeGameApplication {
         };
         printGameBoard(gameBoard);
 
+    }
+
+    public static void printGameBoard(char[][] gameBoard) {
+        for (char[] row : gameBoard) {
+            for (char cel : row) {
+                System.out.print(cel);
+            }
+            System.out.println();
+        }
+    }
+
+    public static void runGame(char[][] gameBoard) {
         while (true) {
             // player enter a number
             input = new Scanner(System.in);
             System.out.println("Enter number from 1 to 9");
             playerPos = input.nextInt();
 
-            while (playerPositions.contains(playerPos) || computerPositions.contains(playerPositions)) {
+            while (playerPositions.contains(playerPos) || computerPositions.contains(playerPositions) || computerPos == playerPos) {
                 System.out.println("this position is taken, try it in other free spot!");
                 playerPos = input.nextInt();
             }
 
             playYourTurn(gameBoard, playerPos, "player");
-
 
             String result = checkWinner();
             if (result.length() > 0) {
@@ -51,11 +64,12 @@ public class TicTacToeGameApplication {
 
             // let the computer chose a random number
             Random randomizer = new Random();
-            int computerPos = randomizer.nextInt(9) + 1;
+            computerPos = randomizer.nextInt(9) + 1;
 
-            while (playerPositions.contains(computerPos) || computerPositions.contains(computerPos)) {
+            while (playerPositions.contains(computerPos) || computerPositions.contains(computerPos) || computerPos == playerPos) {
                 computerPos = randomizer.nextInt(9) + 1;
             }
+
             playYourTurn(gameBoard, computerPos, "computer");
             printGameBoard(gameBoard);
 
@@ -69,27 +83,14 @@ public class TicTacToeGameApplication {
 
     }
 
-    public static void printGameBoard(char[][] gameBoard) {
-        for (char[] row : gameBoard) {
-            for (char col : row) {
-                System.out.print(col);
-            }
-            System.out.println();
-        }
-    }
-
     public static void playYourTurn(char[][] gameBoard, Integer position, String player) {
 
         if (player.equals("player")) {
             SYMBOL = 'X';
             playerPositions.add(position);
-
         } else if (player.equals("computer")) {
             SYMBOL = 'O';
             computerPositions.add(position);
-        }else {
-            System.out.println("this position is taken, try it in other free spot!");
-            playerPos = input.nextInt();
         }
 
         switch (position) {
@@ -157,11 +158,6 @@ public class TicTacToeGameApplication {
                 return result = "Game is Tie!";
             }
         }
-
-
         return result;
-
     }
-
-
 }
