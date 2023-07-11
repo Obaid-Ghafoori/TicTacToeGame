@@ -69,10 +69,11 @@ public class TicTacToeGameApplication {
         }
 
         playYourTurn(gameBoard, computerPos, "computer");
+
     }
 
     public static void playPlayer() {
-        while (playerPositions.contains(playerPos) || computerPositions.contains(playerPositions) || computerPos == playerPos) {
+        while (playerPositions.contains(playerPos) || computerPositions.contains(playerPos) || computerPos == playerPos) {
             System.out.println("this position is taken, try it in other free spot!");
             playerPos = input.nextInt();
         }
@@ -160,7 +161,7 @@ public class TicTacToeGameApplication {
         String result = checkWinner();
         if (result.length() > 0) {
             System.out.println(result);
-            isRunning = false;
+           isRunning = false;
         }
     }
 }
